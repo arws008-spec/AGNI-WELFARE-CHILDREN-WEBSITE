@@ -5,8 +5,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const User = require("./User");
+const Admin = require("./admin");
+const Login = require("./login");
+const Register = require("./register");
 const Donation = require("./Donation");
+const NCCApplication = require("./NCCApplication");
+const ARWS = require("./arws");
 
 // ================= APP =================
 const app = express();
@@ -24,90 +28,6 @@ const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET
 });
-
-// ================= AUTH APIs =================
-
-// ================= REGISTER =================
-app.post("/register", async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required"
-      });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "User already exists"
-      });
-    }
-
-    const user = new User({ name, email, password });
-    await user.save();
-
-    res.json({
-      success: true,
-      message: "Registration successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
-  } catch (err) {
-    console.error("Register error:", err);
-    res.status(500).json({
-      success: false,
-      message: "Registration failed"
-    });
-  }
-});
-
-// ================= LOGIN =================
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password required"
-      });
-    }
-
-    const user = await User.findOne({ email, password });
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password"
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({
-      success: false,
-      message: "Login failed"
-    });
-  }
-});
-
-// ================= PAYMENT =================
 
 // ================= CREATE ORDER =================
 app.post("/create-order", async (req, res) => {
@@ -167,8 +87,6 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-const NCCApplication = require("./NCCApplication");
-
 app.post("/api/ncc-application", async (req, res) => {
   try {
     const application = new NCCApplication(req.body);
@@ -181,5 +99,101 @@ app.post("/api/ncc-application", async (req, res) => {
   } catch (err) {
     console.error("NCC save error:", err);
     res.status(500).json({ success: false, message: "Failed to submit application" });
+  }
+});
+
+// ================= REGISTER =================
+app.post("/api/register", async (req, res) => {
+  try {
+    const { fullname, username, email, permanentaddress, bloodgroup, password } = req.body;
+
+    const user = new Register({
+      fullname,
+      username,
+      email,
+      permanentaddress,
+      bloodgroup,
+      password
+    });
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "User registered successfully"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Register failed" });
+  }
+});
+
+// ================= LOGIN =================
+app.post("/api/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const login = new Login({
+      username,
+      password
+    });
+
+    await login.save();
+
+    res.json({
+      success: true,
+      message: "Login data saved"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Login failed" });
+  }
+});
+
+// ================= ADMIN LOGIN =================
+app.post("/api/admin-login", async (req, res) => {
+  try {
+    const { ADMIN_USERNAME, ADMIN_PASSWORD } = req.body;
+
+    const admin = new Admin({
+      ADMIN_USERNAME,
+      ADMIN_PASSWORD
+    });
+
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: "Admin login saved"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Admin login failed" });
+  }
+});
+
+// ================= ARWS CADET APPLICATION =================
+app.post("/api/arws-application", async (req, res) => {
+  try {
+
+    const application = new ARWS(req.body);
+
+    await application.save();
+
+    res.json({
+      success: true,
+      message: "ARWS Application submitted successfully",
+      applicationId: application._id
+    });
+
+  } catch (error) {
+    console.error("ARWS save error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit application"
+    });
   }
 });
