@@ -2270,10 +2270,18 @@ nav a.active {
 }
 
 /* ---------------- RIGHT TEXT ---------------- */
-.jobs-right {
+.jobs-righta {
   flex: 0 0 48%;
   text-align: left;
   font-size: 32px;
+  color: #1e3f8f;
+  margin-top: -140px;
+}
+
+.jobs-left {
+  flex: 0 0 48%;
+  text-align: left;
+  font-size: 12px;
   color: #1e3f8f;
   margin-top: -140px;
 }
@@ -2341,7 +2349,7 @@ nav a.active {
   }
 
   .jobs-title {
-    font-size: 150px;
+    font-size: 50px;
     /* allow wrap ONLY on mobile */
   }
 
@@ -2455,7 +2463,7 @@ nav a.active {
 }
 
 /* ---------------- RIGHT TEXT ---------------- */
-.volunteer-left {
+.volunteer-lefta {
   flex: 0 0 48%;
   text-align: left;
   font-size: 32px;
