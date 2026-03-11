@@ -14,14 +14,29 @@ const ARWS = require("./arws");
 
 // ================= APP =================
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: [
+    "https://agniruralwelfaresociety.org.in",
+    "https://www.agniruralwelfaresociety.org.in",
+    "https://gorgeous-duckanoo-3c12fd.netlify.app"
+  ],
+  methods: ["GET","POST"],
+  credentials: true
+}));
+app.use(express.json({ limit: "10mb" }));
 
 // ================= MONGODB CONNECTION =================
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.log("❌ MongoDB Error:", err));
+
+app.get("/api", (req,res)=>{
+  res.json({
+    status:"API running",
+    server:"AGNI RURAL WELFARE BACKEND"
+  })
+});
 
 // ================= RAZORPAY =================
 const razorpay = new Razorpay({
@@ -197,3 +212,4 @@ app.post("/api/arws-application", async (req, res) => {
     });
   }
 });
+
