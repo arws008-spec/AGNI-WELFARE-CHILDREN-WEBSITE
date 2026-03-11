@@ -2275,7 +2275,7 @@ nav a.active {
   text-align: left;
   font-size: 32px;
   color: #1e3f8f;
-  margin-top: -140px;
+  margin-top: -140px
 }
 
 .jobs-left {
@@ -2283,7 +2283,6 @@ nav a.active {
   text-align: left;
   font-size: 12px;
   color: #1e3f8f;
-  margin-top: -140px;
 }
 
 /* BLUE TEXT – ONE LINE LIKE IMAGE */
@@ -2363,10 +2362,7 @@ nav a.active {
   /* 🔥 pushes text down */
 }
 
-.jobs-left .apply-btn {
-  margin-bottom: -20px;
-  /* 🔥 space between image button and text */
-}
+ 
 
 
 /* SMALL MOBILE */
@@ -3326,3 +3322,4 @@ flex-direction:column;
 }
 
 }
+
