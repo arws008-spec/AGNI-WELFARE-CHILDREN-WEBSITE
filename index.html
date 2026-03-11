@@ -23,13 +23,14 @@
       <div class="auth-tabs">
         <button class="tab-btn active" onclick="switchTab('login')">Login</button>
         <button class="tab-btn" onclick="switchTab('register')">Register</button>
+        <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
       </div>
 
       <!-- Login Form -->
       <form id="loginForm" class="auth-form active">
         <h2>Welcome Back</h2>
         <p class="form-subtitle">Sign in to your account</p>
-
+        <div class="form-error" id="loginError"></div>
         <div class="form-group">
           <label for="loginUser">Username</label>
           <input type="text" id="loginUser" placeholder="Enter your username">
@@ -56,6 +57,7 @@
       <form id="registerForm" class="auth-form">
         <h2>Create Account</h2>
         <p class="form-subtitle">Join our mission today</p>
+        <div class="form-error" id="registerError"></div>
 
         <div class="form-group">
           <label for="registerName">Full Name</label>
@@ -63,8 +65,43 @@
         </div>
 
         <div class="form-group">
+          <label for="registerUsername">Username</label>
+          <input type="text" id="registerUsername" placeholder="Enter your username">
+        </div>
+
+        <div class="form-group">
+          <label for="registerPhoto">User Photo</label>
+          <input type="file" id="registerPhoto" accept="image/*">
+        </div>
+
+        <div class="form-group">
           <label for="registerEmail">Email</label>
           <input type="email" id="registerEmail" placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="registerGuardian">Father's / Guardian Name</label>
+          <input type="text" id="registerGuardian" placeholder="Enter father's / guardian name">
+        </div>
+
+        <div class="form-group">
+          <label for="registerAddress">Permanent Address</label>
+          <textarea id="registerAddress" rows="2" placeholder="Enter permanent address"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="registerBlood">Blood Group</label>
+          <input type="text" id="registerBlood" placeholder="e.g. O+, A-, B+">
+        </div>
+
+        <div class="form-group">
+          <label for="registerDob">Date of Birth</label>
+          <input type="date" id="registerDob">
+        </div>
+
+        <div class="form-group">
+          <label for="registerEnrollmentDate">Date of Enrollment</label>
+          <input type="date" id="registerEnrollmentDate" readonly>
         </div>
 
         <div class="form-group password-group">
@@ -82,14 +119,74 @@
             <button type="button" class="password-toggle" onclick="togglePassword('registerConfirm')">👁️</button>
           </div>
         </div>
+        <div class="onboard-actions" id="onboardActions">
+          <button type="button" class="auth-button" onclick="openCadetFlow()">Continue</button>
+          <button type="button" class="auth-button outline" onclick="skipCadetFlow()">Skip</button>
+        </div>
 
         <button type="button" onclick="register()" class="auth-button">Create Account</button>
+
 
         <div class="form-footer">
           <label class="terms-agree">
             <input type="checkbox" required> I agree to the terms and conditions
           </label>
         </div>
+
+        <!-- User ID Card Preview (shown after successful registration) -->
+        <div id="userIdCardSection" class="user-id-card-section" style="display:none;">
+          <h3>Your ARWS Identity Card</h3>
+          <div id="userIdCardContainer" class="user-id-card">
+            <div class="user-id-card-header">
+              <h2>Agni Rular Welfare Socitey</h2>
+              <p>IDENTITY CARD</p>
+              <p class="user-id-motto">Motto : Bravery Unity &amp; Discipline</p>
+            </div>
+            <div class="user-id-card-body">
+              <div class="user-id-photo-box">
+                <img id="userIdPhotoPreview" src="" alt="User Photo">
+              </div>
+              <div class="user-id-details">
+                <p><span class="label">Full Name :</span> <span id="userIdFullName">-</span></p>
+                <p><span class="label">Username :</span> <span id="userIdUsername">-</span></p>
+                <p><span class="label">Email :</span> <span id="userIdEmail">-</span></p>
+                <p><span class="label">Father's / Guardian :</span> <span id="userIdGuardian">-</span></p>
+                <p><span class="label">Permanent Address :</span> <span id="userIdAddress">-</span></p>
+                <p><span class="label">Blood Group :</span> <span id="userIdBlood">-</span></p>
+                <p><span class="label">Date of Birth :</span> <span id="userIdDob">-</span></p>
+                <p><span class="label">Date of Enrollment :</span> <span id="userIdEnroll">-</span></p>
+              </div>
+            </div>
+            <div class="user-id-footer">
+              <p>AGNI RULAR WELFARE SOCIETY</p>
+            </div>
+          </div>
+          <button type="button" class="auth-button outline" onclick="downloadUserIdentityCard()">
+            Download ID Card
+          </button>
+        </div>
+      </form>
+
+      <!-- Admin login form -->
+      <form id="adminForm" class="auth-form">
+        <h2>Admin Login</h2>
+        <p class="form-subtitle">Enter admin credentials</p>
+        <div class="form-error" id="adminError"></div>
+
+        <div class="form-group">
+          <label for="adminUser">Username</label>
+          <input type="text" id="adminUser" placeholder="Admin username">
+        </div>
+
+        <div class="form-group password-group">
+          <label for="adminPass">Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="adminPass" placeholder="Admin password">
+            <button type="button" class="password-toggle" onclick="togglePassword('adminPass')">👁️</button>
+          </div>
+        </div>
+
+        <button type="button" onclick="login()" class="auth-button">Sign In</button>
       </form>
     </div>
 
@@ -111,7 +208,6 @@
 
   <!-- ================= WEBSITE ================= -->
   <div id="website">
-
     <!-- Mobile Menu Overlay -->
     <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
 
@@ -125,21 +221,200 @@
         <!-- AUTH BUTTON -->
         <a id="authBtn" onclick="openLogin()">Login</a>
         <a onclick="showPage('about')">About Organization</a>
-        <a onclick="showPage('activities')">Activities</a>
+        <a onclick="openGallery()">Gallery/Activites</a>
         <a onclick="showPage('jobs')">Jobs</a>
+        <a onclick="showPage('documentation')">Documentation</a>
         <a onclick="showPage('membership')">Membership</a>
-        <a onclick="showPage('volunteer')">Volunteer</a>
+        <a onclick="showPage('volunteer')">Volunteer/Internship</a>
         <a onclick="showPage('supporters')">Supporters</a>
-        <a onclick="showPage('gallery')">Gallery</a>
-        <a onclick="showPage('donate')">Donate</a>
+        <a onclick="showPage('donate')">Donate/Membership</a>
         <a onclick="showPage('contact')">Contact</a>
       </nav>
 
     </header>
 
+
+
     <section class="card">
       <h3 id="welcomeText">Welcome</h3>
     </section>
+
+    <section id="cadetFlow" class="page">
+      <div class="cadet-form-container">
+
+        <!-- PAGE 1 -->
+        <div id="cadetStep1" class="flow-step active">
+          <h2>ARWS Cadet Enrollment – Page 1</h2>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Name *</label>
+              <input type="text" id="cadetName" placeholder="Enter your full name">
+              <label>Passport Size Photo *</label>
+              <input type="file" id="cadetPhoto" accept="image/*">
+
+            </div>
+
+
+            <div class="form-group">
+              <label>Gender *</label>
+              <select id="cadetGenderSelect">
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Father's Name *</label>
+              <input type="text" id="fatherName" placeholder="Enter father's name">
+            </div>
+
+            <div class="form-group">
+              <label>Father's Occupation</label>
+              <input type="text" id="fatherOcc" placeholder="Enter father's occupation">
+            </div>
+
+            <div class="form-group">
+              <label>Father's Annual Income</label>
+              <input type="text" id="fatherIncome" placeholder="Enter father's income">
+            </div>
+
+            <div class="form-group">
+              <label>Mother's Name *</label>
+              <input type="text" id="motherName" placeholder="Enter mother's name">
+            </div>
+
+            <div class="form-group">
+              <label>Mother's Occupation</label>
+              <input type="text" id="motherOcc" placeholder="Enter mother's occupation">
+            </div>
+
+            <div class="form-group">
+              <label>Mother's Annual Income</label>
+              <input type="text" id="motherIncome" placeholder="Enter mother's income">
+            </div>
+
+            <div class="form-group">
+              <label>Parent / Guardian Name *</label>
+              <input type="text" id="guardianName" placeholder="Enter guardian name">
+            </div>
+
+            <div class="form-group">
+              <label>Aadhaar Card No *</label>
+              <input type="text" id="aadhaar" placeholder="Enter Aadhaar number">
+            </div>
+
+            <div class="form-group">
+              <label>Pan Card No *</label>
+              <input type="text" id="panNumber" placeholder="Enter PAN Card number">
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Address *</label>
+            <textarea id="cadetAddress" rows="3" placeholder="Enter complete address"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>Are you citizen of India or subject of Nepal? *</label>
+            <select id="citizenship">
+              <option value="">Select</option>
+              <option value="India">India</option>
+              <option value="Nepal">Nepal</option>
+            </select>
+          </div>
+
+          <div class="form-error" id="cadetError1"></div>
+          <button class="auth-button" onclick="nextCadetStep()">Next</button>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div id="cadetStep2" class="flow-step">
+          <h2>ARWS Cadet Enrollment – Page 2</h2>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Village *</label>
+              <input type="text" id="village" placeholder="Enter village">
+            </div>
+
+            <div class="form-group">
+              <label>Tehsil / Taluka *</label>
+              <input type="text" id="tehsil" placeholder="Enter tehsil / taluka">
+            </div>
+
+            <div class="form-group">
+              <label>District *</label>
+              <input type="text" id="district" placeholder="Enter district">
+            </div>
+
+            <div class="form-group">
+              <label>PIN Code *</label>
+              <input type="text" id="pincode" placeholder="Enter PIN code">
+            </div>
+
+            <div class="form-group">
+              <label>Post Office *</label>
+              <input type="text" id="postOffice" placeholder="Enter post office">
+            </div>
+
+            <div class="form-group">
+              <label>Railway Station</label>
+              <input type="text" id="railwayStation" placeholder="Enter railway station">
+            </div>
+
+            <div class="form-group">
+              <label>Educational Qualification *</label>
+              <input type="text" id="education" placeholder="Enter qualification">
+            </div>
+
+            <div class="form-group">
+              <label>Date of Birth *</label>
+              <input type="date" id="dob">
+            </div>
+
+            <div class="form-group">
+              <label>School / College Name *</label>
+              <input type="text" id="school" placeholder="Enter school / college">
+            </div>
+
+            <div class="form-group">
+              <label>Willing to undergo service training? *</label>
+              <select id="training">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>Residential Address *</label>
+            <textarea id="resAddress" rows="3" placeholder="Enter residential address"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label>Contact Number (Cadet & Guardian) *</label>
+            <input type="tel" id="contactNo" placeholder="Enter contact number">
+          </div>
+
+          <div class="form-group full">
+            <label>Email Address *</label>
+            <input type="email" id="cadetEmail" placeholder="Enter your email address">
+            <small style="color: #666; font-size: 12px;">Registration ID and Identity Card will be sent to this
+              email</small>
+          </div>
+
+          <div class="form-error" id="cadetError2"></div>
+
+          <button class="auth-button outline" onclick="prevCadetStep()">Back</button>
+          <button class="auth-button" onclick="finishCadetFlow()">Continue</button>
+        </div>
+
+      </div>
+    </section>
+
 
 
     <!-- ================= HOME ================= -->
@@ -147,23 +422,15 @@
       <div class="slider">
         <div class="slides">
           <img src="image51.jpg">
-          <img src="image1.jpg">
-          <img src="image3.jpg">
-          <img src="image4.jpg">
-          <img src="image1.jpg">
-          <img src="image4.jpg">
           <img src="image3.jpg">
           <img src="image20.jpg">
-          <img src="image56.jpg">
           <img src="image57.jpg">
           <img src="image58.jpg">
           <img src="image59.jpg">
-          <img src="image60.jpg">
           <img src="image61.jpg">
           <img src="image62.jpg">
-          <img src="image63.jpg">
           <img src="image64.jpg">
-          <img src="image65.jpg">
+          <img src="image4.jpg">
           <img src="image52.jpg">
         </div>
         <div class="slider-text">
@@ -228,7 +495,7 @@
             <div class="jobs-left">
               <img src="image54.jpg" alt="NCC Recruitment Poster">
 
-              <button class="job-btn apply-btn" onclick="showPage('nccForm')">
+              <button class="job-btn apply-btn" onclick="showPage('volunteer')">
                 Apply Now
               </button>
             </div>
@@ -410,105 +677,173 @@
       </p>
     </section>
 
-    <!-- ================= ACTIVITIES ================= -->
-    <section id="activities" class="page">
-      <h2>Our Social Activities</h2>
-      <p class="center-text">
-        As part of our ongoing social initiatives, Agni Rural Welfare Society supports poor
-        school students in the Sundarbans by providing new clothes, study materials, portion food,
-        and essential items.
-      </p>
-      <p class="center-text">
-        These activities aim to bring joy, dignity, and a sense of inclusion to children from
-        economically disadvantaged backgrounds.
-      </p>
-
-      <div class="activities-gallery">
-        <img src="image5.jpg">
-        <img src="image6.jpg">
-        <img src="image7.jpg">
-        <img src="image8.jpg">
-        <img src="image9.jpg">
-        <img src="image10.jpg">
+    <!-- ================= JOBS ================= -->
+    <section id="jobs" class="page">
+      <div class="coming-soon-container">
+        <h1 class="coming-soon">Coming Soon</h1>
       </div>
     </section>
 
-    <!-- ================= JOBS ================= -->
-    <section id="jobs" class="page">
-      <h2>Job Vacancy – NCC Trainers</h2>
-      <p class="center-text">
-        Agni Rural Welfare Society (NGO) invites applications for full-time Trainer / Drill
-        Instructor roles under our NGO training projects.
-      </p>
-      <p class="center-text">
-        Training areas include Drill, Band, Physical Training, Sports, Obstacle Management,
-        Disaster Management, Civil Defence, and preparation for NDA, IMA, OTA (Indian Army,
-        Navy, Air Force) examinations.
-      </p>
-      <p class="center-text">
-        Interested candidates may send their CV or Resume with photograph via WhatsApp.
-      </p>
-      <div class="center-img">
-        <img src="image13.png" alt="jobs"><br></br>
-      </div>
-      <h3>Dear Cadets, <br></br></h3>
-      <p class="left">
-        We beg to introduce ourselves as a non-governmental and non-profit organization working extensively in the
-        semi-urban and rural regions of West Bengal. At present, our operational area is the Sonarpur Block; however, we
-        are prepared to expand our activities across the entire state. Since Cyclone Aila in 2009 and the subsequent
-        devastation in the Sundarbans, we have been actively involved in social welfare activities in districts such as
-        South 24 Parganas, Midnapore, Darjeeling, and Kalimpong.<br></br>
-      </p>
-      <p class="left">
-        We are pleased to inform you that we conduct regular training camps every Saturday and Sunday, covering
-        activities such as Drill, Physical Training, Marching Band, Obstacle Management, Sports and Games, Cultural
-        Activities, Yoga, Wrestling, Disaster Management, Motivation and Personality Grooming, Screening, and Awareness
-        Training for NDA, IMA, and OTA (Indian Army, Navy, and Air Force) examinations. These camps are held at Sonarpur
-        Mahavidyalaya Playground and Rajpur Agami Playground from 6:20 AM to 10:30 AM.<br></br>
-      </p>
-      <p class="left">
-        Several schools have approached us requesting support in conducting such training programs at their
-        institutions, as most schools lack qualified teachers or trainers for these activities. In response, some
-        schools have formally requested us to provide trainers, at least for drill training.<br></br>
-      </p>
-      <p class="left">
-        To meet this growing demand, we are planning to launch a six-month paid internship programme in which we intend
-        to engage NCC ‘C’ Certificate holder cadets who can provide training in one school per week. During the
-        internship period, interns will receive a stipend ranging from Rs.1,000 to Rs.2,000 per month. Upon successful
-        completion of the six months and fulfillment of our performance criteria, selected candidates may be offered a
-        salary in the range of Rs.15,000 to Rs.18,000 per month.<br></br>
-      </p>
-      <p class="left">
-        We would be highly grateful if you could kindly nominate or recommend suitable NCC ‘C’ Certificate holder cadets
-        who have an interest in social work and possess the ability to conduct the above-mentioned training programs.
-        Criteria for Boys & Girls Candidates:<br></br>
-        1. Minimum qualification: Graduate (Passed)<br></br>
-        2. NCC ‘C’ Certificate holder<br></br>
-        3. Basic knowledge of Disaster Management and NDA/IMA/OTA (Indian Army, Navy, Air Force) examinations.<br></br>
-        4. Resident of Kolkata or South 24 Parganas<br></br>
-        5. Age: Minimum 19 years and maximum 25 years<br></br>
-        6. Six-month paid internship programme<br></br>
-        Nature of Work during Internship:<br></br>
-        • Conduct drill training in schools at least once a week (minimum four days per month)
-        • Assist in other NGO activities, subject to capability, such as Project Research, Analysis,Fundraising,
-        Content<br></br>
-        Writing, Budget Preparation, and Field Implementation Remuneration:<br></br>
-        • Stipend during internship: Rs.1,000 – Rs.2,000 per month (After providing appointment letter)
-        • Salary after successful completion and task fulfillment (which are mentioned above): Rs.10,000 – Rs.18,000 per
-        month
-      </p>
-      <p>
-        Interested cadets may send their CV/Biodata/Resume along with a recent photograph and a copy of the NCC ‘C’
-        Certificate via email or WhatsApp at the contact details given below:<br></br>
-        Email : arws008@gmail.com<br></br>
-        WhatsApp : +91 94338 34013<br></br>
-        We look forward to your kind cooperation and support.<br></br>
-        Thanking you.<br>
-        Yours sincerely,<br>
-        Dipankar Lahiri<br>
-        Secretary<br></br>
-        Contact : 9831460161/9433834013
-      </p>
+    <!-- ================= DOCUMENTATION ================= -->
+    <section id="documentation" class="page">
+
+      <h2 style="text-align:center;">FORM NO. 10AC</h2>
+      <p style="text-align:center;">(See rule 17A/11AA)</p>
+      <p style="text-align:center;"><strong>Order for provisional approval</strong></p>
+
+      <table class="certificate-table">
+
+        <tr>
+          <td>1</td>
+          <td>PAN</td>
+          <td>AABAA7008E</td>
+        </tr>
+
+        <tr>
+          <td>2</td>
+          <td>Name</td>
+          <td>AGNI RURAL WELFARE SOCIETY</td>
+        </tr>
+
+        <tr>
+          <td>2a</td>
+          <td>Nature of Activities</td>
+          <td>Charitable</td>
+        </tr>
+
+        <tr>
+          <td>2b</td>
+          <td>Address</td>
+          <td>
+            Flat/Door/Building: 47, School Road<br>
+            Road/Street/Post Office: Dakshin Jagatdal S.O<br>
+            Area/Locality: Dingelpota<br>
+            Town/City/District: South 24 Parganas<br>
+            State: West Bengal<br>
+            Country: India<br>
+            Pin Code: 700151
+          </td>
+        </tr>
+
+        <tr>
+          <td>3</td>
+          <td>Document Identification Number</td>
+          <td>AABAA7008EF2025101</td>
+        </tr>
+
+        <tr>
+          <td>4</td>
+          <td>Application Number</td>
+          <td>946744880270425</td>
+        </tr>
+
+        <tr>
+          <td>5</td>
+          <td>Unique Registration Number</td>
+          <td>AABAA7008EF20251</td>
+        </tr>
+
+        <tr>
+          <td>6</td>
+          <td>Section under which provisional approval is granted</td>
+          <td>12-Sub-clause (A) of clause (iv) of first proviso to sub-section (5) of section 80G</td>
+        </tr>
+
+        <tr>
+          <td>7</td>
+          <td>Date of provisional approval</td>
+          <td>04-05-2025</td>
+        </tr>
+
+        <tr>
+          <td>8</td>
+          <td>Assessment year or years for which trust is approved</td>
+          <td>From AY 2026-27 to AY 2028-2029</td>
+        </tr>
+
+        <tr>
+          <td>9</td>
+          <td colspan="2">
+
+            <b>Order for provisional approval</b><br><br>
+
+            a. After considering the application of the applicant and the material available on record,
+            the applicant is hereby granted provisional approval with effect from the assessment year
+            mentioned at serial no. 8 above subject to the conditions mentioned in row number 10.<br><br>
+
+            b. The taxability, or otherwise, of the income of the applicant would be separately
+            considered as per the provisions of the Income Tax Act, 1961.<br><br>
+
+            c. This order is liable to be withdrawn by the prescribed authority if it is subsequently
+            found that the activities of the applicant are not genuine or if they are not carried out
+            in accordance with the conditions prescribed in the Income Tax Act.
+
+          </td>
+        </tr>
+
+        <tr>
+          <td>10</td>
+          <td colspan="2">
+
+            <b>The approval is granted subject to the following conditions:</b>
+
+            <li>
+               The registration granted under section 12AB or approval granted under clause (23C)
+              of section 10 has not been cancelled by the Principal Commissioner.
+            </li>
+
+            <li>
+               The form for approval in Form No. 10A has been duly filled with correct information
+              and no false or incorrect documents have been provided.
+            </li>
+
+            <li>
+               The institution or fund shall apply for approval within 6 months of commencement
+              of activities or at least 6 months prior to expiry of provisional approval.
+            </li>
+
+            <li>
+               The registration granted under section 12AB or approval granted under clause (23C)
+              has not been cancelled by the Principal Commissioner as per the Income-tax Rules.
+            </li>
+          </td>
+        </tr>
+
+        <tr>
+
+          <td colspan="2">
+            <strong>Name and Designation of the Approving Authority</strong>
+          </td>
+
+          <td>
+            Principal Commissioner of Income Tax<br>
+            Commissioner of Income Tax<br><br>
+
+          </td>
+
+        </tr>
+
+      </table>
+
+      <div class="poster-left">
+            <img src="image68.png" alt="Poster Left">
+          </div>
+
+      <section class="poster-section">
+
+        <div class="poster-container">
+
+          <div class="poster-left">
+            <img src="image66.png" alt="Poster Left">
+          </div>
+
+          <div class="poster-right">
+            <img src="image67.png" alt="Poster Right">
+          </div>
+
+        </div>
+
+      </section>
     </section>
 
     <!-- ================= MEMBERSHIP ================= -->
@@ -619,12 +954,21 @@
       <p class="left">
         <strong>Organization:</strong> Agni Rural Welfare Society
       </p>
-
-      <div style="text-align:center; margin: 40px 0;">
-        <button class="volunteer-btn apply-btn" onclick="showPage('nccForm')">
-          Register Now
-        </button>
-      </div>
+      <section class="volunteer">
+        <div class="volunteer-recruit-container">
+          <div class="volunteer-right">
+            <img src="image55.jpg" alt="Volunteer Recruitment Poster">
+          </div>
+          <div class="volunteer-left">
+            <img src="image54.jpg" alt="Volunteer Recruitment Poster">
+          </div>
+        </div>
+        <div style="text-align:center; margin: 40px 0;">
+          <button class="volunteer-btn apply-btn" onclick="showPage('nccForm')">
+            Register Now
+          </button>
+        </div>
+      </section>
 
 
     </section>
@@ -641,12 +985,38 @@
         Such support helps strengthen our welfare programs and extend our reach to
         underserved communities.
       </p>
+      <div class="supporters-logos">
+
+        <a href="https://www.connectfor.org/" target="_blank" class="logo-card connectfor">
+          <img src="connectfor.png" alt="ConnectFor">
+        </a>
+
+        <a href="https://internshala.com/" target="_blank" class="logo-card internshala">
+          <img src="intershala.png" alt="Internshala">
+        </a>
+
+        <a href="https://nyks.nic.in/" target="_blank" class="logo-card nyks">
+          <img src="nyks.png" alt="NYKS">
+        </a>
+
+      </div>
     </section>
     <!-- ================= GALLERY ================= -->
     <section id="gallery" class="page">
-      <h2>Gallery</h2>
+      <h2>Gallery & Activities</h2>
       <p class="center-text">
         Browse through our collection of moments from our social service initiatives and community activities.
+      </p>
+
+      <h2 class="center-text">Our Social Activities</h2>
+      <p class="center-text">
+        As part of our ongoing social initiatives, Agni Rural Welfare Society supports poor
+        school students in the Sundarbans by providing new clothes, study materials, portion food,
+        and essential items.
+      </p>
+      <p class="center-text">
+        These activities aim to bring joy, dignity, and a sense of inclusion to children from
+        economically disadvantaged backgrounds.
       </p>
 
       <div class="gallery-container">
@@ -678,32 +1048,58 @@
 
       <div class="donation-container">
         <div class="donation-box">
-          <h3>Choose Donation Amount</h3>
 
-          <div class="donation-options">
-            <button class="amount-btn" onclick="selectAmount(100, this)">₹100</button>
-            <button class="amount-btn" onclick="selectAmount(500, this)">₹500</button>
-            <button class="amount-btn" onclick="selectAmount(1000, this)">₹1,000</button>
-            <button class="amount-btn" onclick="selectAmount(5000, this)">₹5,000</button>
+          <!-- Inner tabs: Donate vs Membership -->
+          <div class="donate-tabs">
+            <button class="donate-tab active" onclick="switchDonateMode('donation', this)">Donate</button>
+            <div class="form-error" id="donationError"></div>
+            <button class="donate-tab" onclick="switchDonateMode('membership', this)">Membership</button>
           </div>
 
+          <!-- DONATION MODE -->
+          <div id="donationMode" class="donate-mode active">
+            <h3>Choose Donation Amount</h3>
+          </div>
+
+          <!-- MEMBERSHIP MODE -->
+          <div id="membershipMode" class="donate-mode">
+            <h3>Membership Contribution</h3>
+            <p class="membership-text">
+              Become a supporting member of Agni Rural Welfare Society.
+            </p>
+
+            <div class="membership-toggle">
+              <button class="membership-btn active" onclick="setMembershipType('monthly', this)">
+                Monthly Membership
+              </button>
+              <button class="membership-btn" onclick="setMembershipType('yearly', this)">
+                Yearly Membership
+              </button>
+            </div>
+
+            <!-- amount suggestions removed - use custom input only -->
+          </div>
+
+          <!-- custom amount input (used for both modes) -->
           <div class="custom-amount">
-            <label for="customAmount">Or Enter Custom Amount:</label>
+            <label for="customAmount">Enter Amount:</label>
             <input type="number" id="customAmount" placeholder="Enter amount in ₹" min="1">
           </div>
 
+          <!-- COMMON DONOR DETAILS -->
           <div class="donor-info">
             <input type="text" id="donorName" placeholder="Your Full Name" required>
             <input type="email" id="donorEmail" placeholder="Your Email Address" required>
             <input type="tel" id="donorPhone" placeholder="Your Phone Number" required>
           </div>
 
-          <button class="donate-btn" id="payBtn" onclick="initiatePayment()">Proceed to Payment</button>
+          <button class="donate-btn" id="payBtn">Proceed to Payment</button>
 
           <p class="info-text">
             💳 Secure payment powered by Razorpay<br>
-            ✓ 100% of your donation goes to our welfare programs
+            ✓ 100% of your support goes to our welfare programs
           </p>
+
         </div>
 
         <div class="impact-box">
@@ -724,6 +1120,8 @@
       </div>
     </section>
 
+
+
     <!-- ================= CONTACT ================= -->
     <section id="contact" class="page">
       <h2>Contact Us</h2>
@@ -734,12 +1132,7 @@
         <strong>Phone:</strong> +91 9433834013
       </p>
       <p class="center-text">
-        <strong>YouTube:</strong> <a href="https://www.youtube.com/@Agniruralwelfaresociety"
-          target="_blank">https://www.youtube.com/@Agniruralwelfaresociety</a>
-      </p>
-      <p class="center-text">
-        <strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=61559729252246&mibextid=ZbWKwL"
-          target="_blank">https://www.facebook.com/profile.php?id=61559729252246&mibextid=ZbWKwL</a>
+        <strong>Email:</strong> arws008@gmail.com
       </p>
     </section>
 
@@ -749,7 +1142,7 @@
       <p class="center-text">
         Please fill out all the required fields below to apply for the internship position.
       </p>
-
+      <div class="form-error" id="nccError"></div>
       <div class="form-page-container">
         <form id="nccRecruitmentForm" class="ncc-form" onsubmit="submitNCCForm(event)">
           <div class="form-row">
@@ -858,7 +1251,78 @@
 
   </div>
 
+  <!-- Registration Success Modal -->
+  <div id="registrationSuccessModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🎉 Registration Successful!</h2>
+        <button class="modal-close" onclick="closeRegistrationModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="success-icon">✓</div>
+        <p class="success-message">Your ARWS Cadet Enrollment has been submitted successfully!</p>
+        <div class="registration-id-box">
+          <label>Your Registration ID:</label>
+          <div class="registration-id" id="displayRegistrationId">-</div>
+          <button class="copy-btn" onclick="copyRegistrationId()">Copy ID</button>
+        </div>
+        <div class="info-box">
+          <p>📧 Your Registration ID and Identity Card have been sent to your registered email address.</p>
+          <p>Please check your email inbox (and spam folder) within a few minutes.</p>
+        </div>
+        <div class="modal-actions">
+          <button class="auth-button" onclick="downloadIdentityCard()">Download Identity Card</button>
+          <button class="auth-button outline" onclick="closeRegistrationModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Identity Card Template (Hidden) -->
+  <div id="identityCardTemplate" style="display: none;">
+    <div class="id-card">
+      <div class="id-card-header">
+        <h3>AGNI RURAL WELFARE SOCIETY</h3>
+        <p>Cadet Identity Card</p>
+      </div>
+      <div class="id-card-body">
+        <div class="id-card-photo">
+          <img id="idCardPhoto" src="" alt="Photo">
+        </div>
+        <div class="id-card-details">
+          <div class="id-card-row">
+            <span class="id-label">Registration ID:</span>
+            <span class="id-value" id="idCardRegId">-</span>
+          </div>
+          <div class="id-card-row">
+            <span class="id-label">Name:</span>
+            <span class="id-value" id="idCardName">-</span>
+          </div>
+          <div class="id-card-row">
+            <span class="id-label">Date of Birth:</span>
+            <span class="id-value" id="idCardDOB">-</span>
+          </div>
+          <div class="id-card-row">
+            <span class="id-label">Aadhaar:</span>
+            <span class="id-value" id="idCardAadhaar">-</span>
+          </div>
+          <div class="id-card-row">
+            <span class="id-label">Contact:</span>
+            <span class="id-value" id="idCardContact">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="id-card-footer">
+        <p>This is an official identity card issued by ARWS</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-message"></div>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 
