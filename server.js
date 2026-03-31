@@ -124,8 +124,10 @@ app.post("/api/ncc-application", async (req, res) => {
 // ================= REGISTER =================
 app.post("/register", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+
     const { name, email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new Register({
       fullname: name,
@@ -183,8 +185,6 @@ app.post("/api/admin-login", async (req, res) => {
     if (ADMIN_USERNAME === "Arws2026" && ADMIN_PASSWORD === "Arws@2026") {
       return res.json({ success: true });
     }
-
-    await admin.save();
 
     res.json({
       success: true,
