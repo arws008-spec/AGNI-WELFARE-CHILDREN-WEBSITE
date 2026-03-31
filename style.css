@@ -596,12 +596,6 @@ nav a:hover::after {
   background-size: cover;
 }
 
-.slides {
-  display: flex;
-  width: 400%;
-  animation: slide 200s linear infinite;
-}
-
 :root {
   --slider-speed: 200s;
 }
@@ -611,7 +605,6 @@ nav a:hover::after {
   width: 400%;
   animation: slide var(--slider-speed) linear infinite;
 }
-
 
 .slides img {
   width: 100%;
@@ -633,13 +626,15 @@ nav a:hover::after {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  color: white;
+  color: #ffffff;
+
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+
+  text-align: center;
   padding: 20px;
-  overflow: hidden;
 }
 
 .slider-text .top-fixed {
@@ -678,7 +673,7 @@ nav a:hover::after {
 .slider-text .bottom-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 10px;
-  transition: 0.3 ease;
+  transition: all 0.3s ease;
 }
 
 .slider-text .bottom-scroll::-webkit-scrollbar-thumb:hover {
@@ -1897,7 +1892,7 @@ nav a.active {
   }
 }
 
-@media (max-width: 500x) {
+@media (max-width: 500px) {
 
   /* Small mobile scrollbar */
   *::-webkit-scrollbar {
@@ -2030,21 +2025,7 @@ nav a.active {
 
 /* ================= SLIDER TEXT CENTERED ================= */
 
-.slider-text {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  color: #ffffff;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* 🔥 CENTER VERTICALLY */
-  align-items: center;
-
-  text-align: center;
-  padding: 20px;
-}
 
 .slider-text .top-fixed {
   text-align: center;
@@ -2278,13 +2259,7 @@ nav a.active {
   margin-top: -140px;
 }
 
-.jobs-left {
-  flex: 0 0 48%;
-  text-align: left;
-  font-size: 12px;
-  color: #1e3f8f;
-  margin-top: -140px;
-}
+
 
 /* BLUE TEXT – ONE LINE LIKE IMAGE */
 .jobs-title {
@@ -2400,23 +2375,14 @@ nav a.active {
 
 /* Hover – clean & professional */
 .apply-btn:hover,
-.info-btn:hover {
-  background: #0f5c45;
-  border: none;
+.info-btn:hover,
+.donate-btn:hover {
+  background-color: #0f5c45;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
-.divider {
-  border: none;
-  /* remove default double line */
-  height: 1px;
-  /* thickness */
-  background: #1F5F3A;
-  /* your site green */
-  margin: 50px auto;
-  /* spacing */
-  width: 100%;
-  /* centered */
-}
+ 
 
 /* =====================================================
    VOLUNTEER SECTION – PERFECT FIT LIKE IMAGE
@@ -2556,8 +2522,7 @@ nav a.active {
 }
 
 /* Hover – clean & professional */
-.volunteer-btn:hover,
-.info-btn:hover {
+.volunteer-btn:hover {
   background: #0f5c45;
   border: none;
 }
@@ -2718,13 +2683,6 @@ img {
   }
 }
 
-/* FIX 3: Correct button hover */
-.donate-btn:hover,
-.info-btn:hover {
-  background-color: #0f5c45;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
 
 /* ===== SUPPORTERS LOGOS SECTION ===== */
 
